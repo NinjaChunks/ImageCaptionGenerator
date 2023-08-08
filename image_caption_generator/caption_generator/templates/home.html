@@ -1,0 +1,143 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <title>Image Caption Generator</title>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        var droppedFile = null;
+
+        function showPreview(event) {
+            var input = event.target;
+            var reader = new FileReader();
+            reader.onload = function() {
+              var preview = document.getElementById('preview');
+              var image = document.createElement('img');
+              image.className = 'preview-image';
+              image.src = reader.result;
+              preview.innerHTML = '';
+              preview.appendChild(image);
+          
+              // Remove previous caption
+              $('#caption-section').hide();
+              $('#caption').text('');
+          
+              // Hide the drop zone box
+              hideDropZone();
+          
+            };
+            reader.readAsDataURL(input.files[0]);
+          
+            droppedFile = input.files[0];
+          }
+          
+
+        function generateCaption() {
+            if (droppedFile) {
+                var formData = new FormData();
+                formData.append('image', droppedFile);
+
+                $.ajax({
+                    url: $('form').attr('action'),
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    beforeSend: function(xhr, settings) {
+                        xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+                    },
+                    success: function(data) {
+                        // Display the generated caption on the homepage
+                        $('#caption').text(data.caption);
+                        $('#caption-section').show();
+                    }
+                });
+            }
+        }
+
+        function handleFileSelect(event) {
+            event.stopPropagation();
+            event.preventDefault();
+
+            var file = event.originalEvent.dataTransfer.files[0];
+
+            // Display preview image
+            var reader = new FileReader();
+            reader.onload = function() {
+                var preview = document.getElementById('preview');
+                var image = document.createElement('img');
+                image.className = 'dropped-image';
+                image.src = reader.result;
+                preview.innerHTML = '';
+                preview.appendChild(image);
+
+                // Remove previous caption
+                $('#caption-section').hide();
+                $('#caption').text('');
+
+                droppedFile = file;
+
+                // Hide the drop zone box
+                hideDropZone();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function hideDropZone() {
+            // Hide the drop zone box
+            $('#drop-zone').hide();
+        }
+
+        $(document).ready(function() {
+            // Hide the caption section initially
+            $('#caption-section').hide();
+
+            // Enable drag and drop
+            $(document).on('dragover', function(event) {
+                event.stopPropagation();
+                event.preventDefault();
+                event.dataTransfer.dropEffect = 'copy';
+            });
+
+            $(document).on('drop', handleFileSelect);
+
+            $('form').submit(function(event) {
+                event.preventDefault(); // Prevent form submission
+
+                generateCaption();
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div id="title">
+            Image Caption Generator
+        </div>
+        <div id="main">
+            <div class="centered">
+                <div id="drop-zone" class="drop-zone">
+                    <div>
+                        Drag and Drop images here
+                    </div>
+                    <div id="drag-drop"></div>
+                </div>
+                <div id="preview"></div>
+                <div id="caption-section">
+                    Generated Caption:
+                    <p id="caption"></p>
+                </div>
+            </div>
+            <form method="post" action="{% url 'caption_generator:generate_caption' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="file" name="image" accept="image/*" required onchange="showPreview(event)">
+                <br>
+                <button type="submit" onclick="generateCaption()">Generate Caption</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

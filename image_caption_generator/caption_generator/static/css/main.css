@@ -1,0 +1,77 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+body {
+  background-color: #1e1e1e; /* Dark background color */
+  color: #ffffff; /* Text color for readability */
+}
+
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+#title{
+  font-weight: 700;
+  background: #1e1e1e;
+  color: wheat;
+  padding: 2rem 2rem;
+  font-size: 1.5rem;
+}
+#main{
+  padding: 0 0 0 2rem;
+}
+#main div{
+  padding: 0.2rem 0;
+}
+
+.preview-image,
+.dropped-image {
+    max-width: 100%;
+    max-height: 500px; /* Adjust the desired maximum height */
+    object-fit: contain; /* Preserve aspect ratio */
+    border-radius: 10px; /* Round corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Add a subtle shadow */
+}
+
+.drop-zone {
+  border: 2px dashed #ccc;
+  padding: 2rem;
+  text-align: center;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+  position: left;
+  width: 300px;
+  height: 300px;
+  margin-bottom: 2rem;
+}
+
+.drop-zone:hover {
+  border-color: #666;
+}
+
+.drop-zone > div {
+  margin-bottom: 1rem;
+  color: #aaa;
+  font-size: 14px;
+}
+
+.drop-zone > button {
+  display: block;
+  margin: 0 auto;
+  padding: 0.5rem 1rem;
+  background-color: #4CAF50;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.drop-zone > button:hover {
+  background-color: #45a049;
+}
+
